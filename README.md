@@ -14,3 +14,16 @@ check following things before applying
 
 - storageclass
 - service IP
+
+
+## Cassandra Best Practices
+
+[hardware requirement](https://cassandra.apache.org/doc/latest/operating/hardware.html)
+- Minimal production
+  - 2 core
+  - 8 GB memory
+- HEAP_NEWSIZE should be 25% of MAX_HEAP_SIZE
+
+## Operation
+
+default superuser role 'cassandra'

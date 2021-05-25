@@ -18,7 +18,7 @@ spec:
       terminationGracePeriodSeconds: 1800
       containers:
       - name: cassandra
-        image: gcr.io/google-samples/cassandra:v13
+        image: hpdevelop/cassandra-k8s:2.1
         imagePullPolicy: Always
         ports:
         - containerPort: 7000
@@ -49,9 +49,9 @@ spec:
               - nodetool drain
         env:
           - name: MAX_HEAP_SIZE
-            value: 512M
+            value: 1G
           - name: HEAP_NEWSIZE
-            value: 100M
+            value: 256m
           - name: CASSANDRA_SEEDS
             value: "cassandra-0.cassandra.default.svc.cluster.local"
           - name: CASSANDRA_CLUSTER_NAME
@@ -72,15 +72,9 @@ spec:
             - /ready-probe.sh
           initialDelaySeconds: 15
           timeoutSeconds: 5
-        # These volume mounts are persistent. They are like inline claims,
-        # but not exactly because the names need to match exactly one of
-        # the stateful pod volumes.
         volumeMounts:
         - name: cassandra-data
           mountPath: /cassandra_data
-  # These are converted to volume claims by the controller
-  # and mounted at the paths mentioned above.
-  # do not use these in production until ssd GCEPersistentDisk or other ssd pd
   volumeClaimTemplates:
   - metadata:
       name: cassandra-data
@@ -90,11 +84,3 @@ spec:
       resources:
         requests:
           storage: 1Gi
-# ---
-# kind: StorageClass
-# apiVersion: storage.k8s.io/v1
-# metadata:
-#   name: fast
-# provisioner: k8s.io/minikube-hostpath
-# parameters:
-#   type: pd-ssd
